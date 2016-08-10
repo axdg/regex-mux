@@ -12,5 +12,5 @@ npm install --save ncache
 ### Usage
 
 ```js
-import cache from ncache
+import ncache from ncache
 ```

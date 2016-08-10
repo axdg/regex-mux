@@ -1,37 +1,30 @@
-export default function cache() {
-  // QUESTION: Should we support a default ttl?
-  const _cache = new Map()
-  const {
-    clear,
-    entries,
-    forEach,
-    get,
-    has,
-    keys,
-    values,
-  } = _cache
+export default function ncache(d) {
+  const map = new Map()
+  const timeouts = new Map()
 
-  const timeouts = {}
-  function set(k, v, ttl) {
-    _cache.set(k, v)
-    if (ttl) {
-      clearTimeout(timeouts[k])
-      const cancel = setTimeout(() => {
-        _cache.delete(k)
-      }, ttl)
-      timeouts[k] = cancel
+  function set(k, v, t = d) {
+    clearTimeout(timeouts.get(k))
+    timeouts.delete(k)
+    map.set(k, v)
+
+    if (t) {
+      timeouts.set(k, setTimeout(() => {
+        map.delete(k)
+        timeouts.delete(k)
+      }, t))
     }
   }
 
   return {
-    clear,
-    delete: _cache.delete,
-    entries,
-    forEach,
-    get,
-    has,
-    keys,
+    clear: map.clear,
+    delete: map.delete,
+    entries: map.entries,
+    forEach: map.forEach,
+    get: map.get,
+    has: map.has,
+    keys: map.keys,
     set,
-    values,
+    values: map.values,
+    get size() { return map.size },
   }
 }
