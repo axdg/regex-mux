@@ -1,30 +1,56 @@
-export default function ncache(d) {
-  const map = new Map()
-  const timeouts = new Map()
+import ptore from 'path-to-regexp'
 
-  function set(k, v, t = d) {
-    clearTimeout(timeouts.get(k))
-    timeouts.delete(k)
-    map.set(k, v)
+function assert(e, msg) {
+  if (!e) throw new Error(msg)
+}
 
-    if (t) {
-      timeouts.set(k, setTimeout(() => {
-        map.delete(k)
-        timeouts.delete(k)
-      }, t))
+export default function create(def) {
+  assert(typeof fn === 'function', '`fn` must be a function')
+
+  const routes = []
+
+  function append(path, fn) {
+    assert(typeof path === 'string', '`path` must be a string')
+    assert(typeof fn === 'function', '`fn` must be a function')
+
+    const keys = []
+    const re = ptore(path, keys)
+
+    routes.unshift({
+      keys: keys.map(k => k.name),
+      re,
+      fn,
+    })
+  }
+
+  function match(path) {
+    assert(typeof path === 'string', '`path` must be a string')
+
+    let len = routes.length
+    while (len) {
+      const { keys, re, fn } = routes[len - 1]
+      const values = re.exec(path)
+
+      if (values) {
+        const params = values.shift().reduce((previous, value, index) => {
+          previous[keys[index]] = value
+          return previous
+        }, {})
+
+        return {
+          params,
+          fn,
+        }
+      }
+
+      len--
+    }
+
+    return {
+      params: null,
+      def,
     }
   }
 
-  return {
-    clear: map.clear,
-    delete: map.delete,
-    entries: map.entries,
-    forEach: map.forEach,
-    get: map.get,
-    has: map.has,
-    keys: map.keys,
-    set,
-    values: map.values,
-    get size() { return map.size },
-  }
+  return { append, match }
 }

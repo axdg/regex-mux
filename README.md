@@ -1,16 +1,16 @@
-# ncache
+# regex-mux
 
-> A Map that supports key expiration
+> A minimal regex based router (or mux)
 
 ### Installation
 
 Install the package with [npm](https://www.npmjs.com/) and add it to your dependencies:
 
 ```
-npm install --save ncache
+npm install --save regexp-mux
 ```
 ### Usage
 
 ```js
-import ncache from ncache
+import create from 'regex-mux'
 ```

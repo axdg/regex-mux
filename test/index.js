@@ -1,2 +1,2 @@
-import ncache from '../src'
+import create from '../src'
 import expect from 'expect'
