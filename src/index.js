@@ -5,7 +5,7 @@ function assert(e, msg) {
 }
 
 export default function create(def) {
-  assert(typeof fn === 'function', '`fn` must be a function')
+  assert(typeof def === 'function', '`def` must be a function')
 
   const routes = []
 
@@ -48,7 +48,7 @@ export default function create(def) {
 
     return {
       params: null,
-      def,
+      fn: def,
     }
   }
 
