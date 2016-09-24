@@ -51,12 +51,55 @@ describe('create()', () => {
       }).toThrow('unnamed')
     })
 
-    it('match should throw if `path` is not a string')
+    it('match should throw if `path` is not a string', () => {
+      const { match } = create(noop)
+      expect(function () {
+        match({})
+      }).toThrow('`path` must be a string')
+    })
 
-    it('match should match routes in the order they were appended')
+    it('match should match routes in the order they were appended', () => {
+      const { append, match } = create(noop)
 
-    it('match should return the correct handler function')
+      // Both are able to match the same string.
+      append('/:foo/:bar/baz', handler('one'))
+      append('/:foo/:bar*', handler('two'))
 
-    it('match should return the correct params hash')
+      expect(match('/foo/bar/baz').fn()).toBe('one')
+      expect(match('/foo/bar').fn()).toBe('two')
+    })
+
+    it('match should return the correct handler function', () => {
+      const { append, match } = create(handler('not found'))
+      append('/p/:foo/bar/:baz(\\d+)', handler('baz is uid'))
+      append('/p/:foo/bar/:baz', handler('single baz param'))
+      append('/p/:foo+', handler('any length foo'))
+
+      expect(match('/p/some/really/long/path').fn()).toBe('any length foo')
+      expect(match('/p/foo/bar/baz').fn()).toBe('single baz param')
+      expect(match('/p/foo/bar/1234').fn()).toBe('baz is uid')
+      expect(match('q').fn()).toBe('not found')
+    })
+
+    it('match should return the correct params hash', () => {
+      const { append, match } = create(noop)
+      append('/:foo/bar/:baz(\\d+)', noop)
+      append('/:foo/bar/:baz', noop)
+      append('/:foo+', noop)
+
+      expect(match('/some/really/long/path').params).toEqual({
+        foo: 'some/really/long/path',
+      })
+
+      expect(match('/foo/bar/baz').params).toEqual({
+        foo: 'foo',
+        baz: 'baz',
+      })
+
+      expect(match('/foo/bar/1234').params).toEqual({
+        foo: 'foo',
+        baz: '1234',
+      })
+    })
   })
 })

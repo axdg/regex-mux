@@ -41,7 +41,7 @@ export default function create(def) {
       const values = re.exec(path)
 
       if (values) {
-        const params = values.shift().reduce(function (previous, value, index) {
+        const params = values.slice(1).reduce(function (previous, value, index) {
           previous[keys[index]] = value
           return previous
         }, {})
