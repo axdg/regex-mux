@@ -2,7 +2,7 @@
 
 > A minimal regex based router (or mux)
 
-[![Build Status](https://semaphoreci.com/api/v1/axdg/regex-mux/branches/master/shields_badge.svg)](https://semaphoreci.com/axdg/regex-mux)
+[![Build Status](https://semaphoreci.com/api/v1/axdg/regex-mux/branches/master/shields_badge.svg)](https://semaphoreci.com/axdg/regex-mux) [![Circle CI](https://circleci.com/gh/axdg/regex-mux/tree/master.svg?style=shield)](https://circleci.com/gh/axdg/regex-mux/tree/master)
 
 ### Installation
 
