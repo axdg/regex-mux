@@ -13,11 +13,20 @@ export default function create(def) {
     assert(typeof path === 'string', '`path` must be a string')
     assert(typeof fn === 'function', '`fn` must be a function')
 
-    const keys = []
+    let keys = []
     const re = ptore(path, keys)
 
+    keys = keys.map(function (key) {
+      const { name } = key
+      if (typeof name === 'number') {
+        throw new Error('unnamed parameters are not allowed')
+      }
+
+      return name
+    })
+
     routes.unshift({
-      keys: keys.map(k => k.name),
+      keys,
       re,
       fn,
     })
@@ -32,7 +41,7 @@ export default function create(def) {
       const values = re.exec(path)
 
       if (values) {
-        const params = values.shift().reduce((previous, value, index) => {
+        const params = values.shift().reduce(function (previous, value, index) {
           previous[keys[index]] = value
           return previous
         }, {})

@@ -25,4 +25,38 @@ describe('create()', () => {
     expect(fn).toBeA('function')
     expect(fn()).toBe('default handler')
   })
+
+  describe('append and match', () => {
+    const handler = str => () => str
+    const noop = handler()
+
+    it('append should throw if `path` is not a string', () => {
+      const { append } = create(noop)
+      expect(function () {
+        append(undefined, noop)
+      }).toThrow('`path` must be a string')
+    })
+
+    it('append should throw if `fn` is not a function', () => {
+      const { append } = create(noop)
+      expect(function () {
+        append('foo/:bar', undefined)
+      }).toThrow('`fn` must be a function')
+    })
+
+    it('append should throw if unnamed parameters are present', () => {
+      const { append } = create(noop)
+      expect(function () {
+        append('/foo/(\\d{0,6})', noop)
+      }).toThrow('unnamed')
+    })
+
+    it('match should throw if `path` is not a string')
+
+    it('match should match routes in the order they were appended')
+
+    it('match should return the correct handler function')
+
+    it('match should return the correct params hash')
+  })
 })
